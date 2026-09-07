@@ -8,6 +8,7 @@ import {landscapePoint,curveYaw,curveY,groundHeight} from './landscape.js';
 import {dinerActor} from './corner-block.js';
 import {isBlocked} from './navigation.js';
 import {streetLighting} from './street-lighting.js';
+import {loadingStatus,loadingFailure} from './startup-ui.js';
 
 const $=id=>document.getElementById(id);
 const canvas=$('world');
@@ -17,6 +18,7 @@ const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(57,innerWidth/innerHeight,.045,180);camera.rotation.order='YXZ';
 const sun=streetLighting(renderer,scene);if(innerWidth<=800)sun.shadow.mapSize.set(2048,2048);
 await loadAuthoredAssets();
+loadingStatus('正在布置街区…');
 const world=makeWorld(scene),sky=makeUrbanSky(scene);
 const catLogical=world.cat.position.clone();landscapePoint(world.cat.position);
 const player={pos:world.spawn.clone(),yaw:-.28,pitch:-.015,height:1.62,vy:0,grounded:true};
@@ -135,12 +137,12 @@ function animate(now){requestAnimationFrame(animate);delta=Math.min((now-last)/1
  world.update?.(elapsed);sky.userData.update?.(elapsed);
  const pet=elapsed-(world.cat.userData.petted??-100);world.cat.position.y=.15+curveY(catLogical.z)+(pet<2?Math.sin(pet*8)*.018:0);
  $('place-name').textContent=player.pos.x>6&&player.pos.z>3.3&&player.pos.z<5.7?'青木侧巷':player.pos.x>5.5&&player.pos.z>=5.7&&player.pos.z<14?'小满食堂前庭':player.pos.z<-27?'沿河小广场':player.pos.z<-10?'旧书店街口':player.pos.z<3?'青木街':'南巷邮局';updateTarget();renderer.render(scene,camera);frameCount++;fpsTime+=delta;if(fpsTime>=1){fps=frameCount/fpsTime;frameCount=0;fpsTime=0}}
-requestAnimationFrame(animate);
+// Start continuous rendering only after startup; avoid competing with model decoding.
 window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();$('loading').hidden=false;$('loading-text').textContent='画面暂时中断，请刷新页面继续。'});
 try{
  await loadCharacters();
- $('loading-text').textContent='正在准备人物 · 1 / 6';
+ loadingStatus('正在准备人物 · 1 / 6', '模型已下载，正在准备材质与动作。');
  avatar=await createCharacter(scene);avatar.root.visible=false;
  const add=async(id,label,options)=>{$('loading-text').textContent=`正在准备人物 · ${npcs.length+2} / 6`;const n=await createCharacter(scene,options);n.logical=n.root.position.clone();n.facing=options.yaw||0;npcs.push(n);interactables.push({id,label,npc:n});return n};
  await add('post','和小夏聊聊',{name:'小夏 · 邮局',variant:'post',x:-2.85,z:8.05,yaw:1.1});
@@ -149,7 +151,13 @@ try{
  await add('river','和阿遥聊聊',{name:'阿遥 · 河边',variant:'river',x:2.0,z:-34.8,yaw:2.2});
  const n=await add('walker','打个招呼',{name:'散步的邻居',variant:'walker',x:1.7,z:-7,yaw:Math.PI,scale:1});n.route={points:[{x:1.7,z:-7},{x:.7,z:-20}],index:1,pause:0};
  interactables.push({id:'cat',label:'摸摸橘子',pos:catLogical},{id:'bench',label:'坐下歇一会儿',pos:new THREE.Vector3(-4.25,0,-18.3)},{id:'bench',label:'坐下看看河',pos:new THREE.Vector3(6,0,-35.4)});
+ loadingStatus('正在点亮街区…');
+ await new Promise(resolve=>requestAnimationFrame(resolve));
+ updateCamera(0);
+ await renderer.compileAsync(scene,camera);
+ renderer.render(scene,camera);
  $('loading').hidden=true;$('start-btn').disabled=false;$('start-btn').innerHTML='走进南巷 <span>→</span>';
-}catch(error){console.error(error);$('loading-text').textContent='人物载入失败，请刷新页面重试。'}
+ last=performance.now();requestAnimationFrame(animate);
+}catch(error){loadingFailure(error);}
 // Read-only diagnostics for repeatable local QA. No hidden movement/quest shortcuts.
 window.__nanxiang={get state(){return JSON.parse(JSON.stringify(state))},get player(){return {x:player.pos.x,y:player.pos.y,z:player.pos.z,yaw:player.yaw,pitch:player.pitch,grounded:player.grounded,seated}},get status(){return {ready:!!avatar,started,thirdPerson,target:target?.id,dialogue:dialogue?.name,fps,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,characters:npcs.length,animations:avatar?Object.keys(avatar.actions):[],colliders:colliders.length}},get characterDetails(){return [avatar,...npcs].filter(Boolean).map(n=>({name:n.name,...n.diagnostics}))},get gpu(){return {...renderer.info.memory}},get actors(){return npcs.map(n=>({name:n.name,x:n.logical.x,z:n.logical.z,yaw:n.facing}))}};

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {downloadAsset} from './asset-download.js';
 
 let library;const references={};
 const rigMap={pelvis:'hips',spine_01:'spine',spine_02:'chest',spine_03:'upperChest',neck_01:'neck',head:'head'};
@@ -16,9 +17,7 @@ for(const side of ['Left','Right']){
 }
 
 export async function loadMotionLibrary(){
-  const response=await fetch(`${import.meta.env.BASE_URL}animations/human-motion.json`);
-  if(!response.ok)throw new Error('人物动作加载失败');
-  library=await response.json();
+  library=JSON.parse(new TextDecoder().decode(await downloadAsset('animations/human-motion.json', '人物动作')));
   for(const [key,rest] of Object.entries({default:library.rest,...library.references})){
     const nodes=rest.map(n=>{const o=new THREE.Object3D();o.name=n.name;o.position.fromArray(n.translation??[0,0,0]);o.quaternion.fromArray(n.rotation??[0,0,0,1]);o.scale.fromArray(n.scale??[1,1,1]);return o;});
     rest.forEach((n,i)=>n.children?.forEach(child=>nodes[i].add(nodes[child])));

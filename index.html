@@ -2,7 +2,24 @@
 <html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#71bdab"><title>南巷 · 夏日来信</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23294340'/%3E%3Cpath d='M12 20h40v27H12zM12 20l20 16 20-16' fill='none' stroke='%23f2edda' stroke-width='4'/%3E%3C/svg%3E"></head>
 <body>
 <canvas id="world" aria-label="南巷三维探索场景"></canvas>
-<div id="loading"><span class="mail-icon">✉</span><p id="loading-text">正在走进南巷…</p></div>
+<div id="loading" role="status"><span class="mail-icon">✉</span><p id="loading-text">正在连接南巷…</p><small id="loading-detail">首次打开正在准备游戏，请稍候。</small><button id="loading-retry" hidden onclick="location.reload()">重新连接</button></div>
+<script>
+// Keep a working recovery button even if a module cannot be downloaded.
+window.addEventListener('error', function(event) {
+  if (event.target && event.target.tagName === 'SCRIPT') {
+    document.getElementById('loading-text').textContent = '游戏程序下载中断';
+    document.getElementById('loading-detail').textContent = '请点击重新连接，再试一次。';
+    document.getElementById('loading-retry').hidden = false;
+  }
+}, true);
+setTimeout(function() {
+  var text = document.getElementById('loading-text');
+  if (text.textContent === '正在连接南巷…') {
+    document.getElementById('loading-detail').textContent = '连接较慢，还在下载游戏程序；也可以点击重新连接。';
+    document.getElementById('loading-retry').hidden = false;
+  }
+}, 20000);
+</script>
 <header id="identity"><span class="stamp">南<br>巷</span><div><h1>夏日来信</h1><p>NANXIANG · A SUMMER LETTER</p></div></header>
 <div id="top-right"><span id="weather">晴 · 午后</span><button id="journal-btn" title="信件 / J" aria-label="打开信件">✉ <span id="mail-count">0 / 3</span></button><button id="menu-btn" title="操作说明" aria-label="打开操作说明">☰</button></div>
 <div id="location"><span class="location-mark">◇</span><span id="place-name">南巷邮局</span><span class="location-line"></span></div>
@@ -15,5 +32,5 @@
 <section id="journal" class="paper panel" hidden aria-label="信件清单"><button class="close" data-close="journal" aria-label="关闭信件">×</button><span class="eyebrow">南巷邮便</span><h2>装在信里的夏天</h2><p class="panel-intro">有些话，还是写在纸上比较好。</p><ol id="letters"></ol><button id="reset-btn">重新开始送信</button></section>
 <section id="help" class="paper panel" hidden aria-label="操作说明"><button class="close" data-close="help" aria-label="关闭操作说明">×</button><span class="eyebrow">在南巷散步</span><h2>不赶时间。</h2><dl><dt>W A S D / 方向键</dt><dd>行走</dd><dt>鼠标 / 按住画面拖动</dt><dd>环顾四周</dd><dt>E / 点击互动提示</dt><dd>交谈、摸猫、坐下</dd><dt>Shift / Space</dt><dd>快走 / 跳跃</dd><dt>V</dt><dd>第一 / 第三人称</dd><dt>J / M / P</dt><dd>信件 / 环境声 / 拍照</dd><dt>Esc</dt><dd>关闭面板或释放鼠标</dd></dl><p class="panel-intro">鼠标释放后，点击画面继续。移动设备可用左下方摇杆，拖动右侧画面环顾。</p><button id="resume-btn" class="primary">回到街上 <span>→</span></button></section>
 <div id="toast" role="status" hidden></div><div id="touch-controls" hidden><div id="joystick"><div></div></div><button id="touch-action">E</button></div>
-<script type="module" src="/src/main.js"></script>
+<script type="module" src="/src/bootstrap.js"></script>
 </body></html>

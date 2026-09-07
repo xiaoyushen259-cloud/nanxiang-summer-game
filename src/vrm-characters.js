@@ -3,6 +3,8 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {VRMLoaderPlugin,VRMUtils} from '@pixiv/three-vrm';
 import {characterAssets} from './character-assets.js';
 import {createCharacterMotion,loadMotionLibrary} from './humanoid-motion.js';
+import {downloadAsset} from './asset-download.js';
+import {decodeModelBuffer} from './model-buffer.js';
 
 const buffers=new Map(),textureSources=new Map();
 const loader=new GLTFLoader().register(parser=>new VRMLoaderPlugin(parser));
@@ -14,9 +16,9 @@ shadowContext.fillStyle=shadowGradient;shadowContext.fillRect(0,0,64,64);
 const contactTexture=new THREE.CanvasTexture(shadowCanvas);
 export async function loadCharacters(){
   await Promise.all([loadMotionLibrary(),...[...new Set(Object.values(characterAssets).map(c=>c.file))].map(async file=>{
-    const response=await fetch(`${import.meta.env.BASE_URL}models/${file}`);
-    if(!response.ok)throw new Error(`角色下载失败：${file} (${response.status})`);
-    buffers.set(file,await response.arrayBuffer());
+    const compressed=typeof DecompressionStream==='function';
+    const bytes=await downloadAsset(`models/web-v1/${file}${compressed?'.gz':''}`, '角色模型');
+    buffers.set(file,await decodeModelBuffer(bytes));
   })]);
 }
 
@@ -41,7 +43,7 @@ async function shareImages(gltf,file){
 export async function createCharacter(scene,{x=0,z=0,yaw=0,scale=1,name='小夏',variant='courier'}={}){
   const config=characterAssets[variant];
   if(!config||!buffers.has(config.file))throw new Error(`未准备角色：${variant}`);
-  const gltf=await loader.parseAsync(buffers.get(config.file),'');
+  const gltf=await loader.parseAsync(buffers.get(config.file),'').catch(error=>{throw new Error(`${name} 的模型未能读取：${error.message}`)});
   await shareImages(gltf,config.file);
   const vrm=gltf.userData.vrm;
   if(!vrm)throw new Error(`缺少 VRM 骨骼信息：${config.file}`);

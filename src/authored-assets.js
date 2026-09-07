@@ -3,13 +3,15 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {prepareFoliage,foliageDepth} from './foliage-motion.js';
 import {shopGraphic} from './shop-graphics.js';
 import {streetSurfaceMaps} from './street-surfaces.js';
+import {downloadAsset} from './asset-download.js';
 
 const names=['Bicycle','Planter','BookSign','BookDisplay','DinerUpper','StoreCrown','TeaTin','DrinkCarton','SnackBag','DeliveryVan','TeaSign','SoupSign','StreetTree'];
 const templates=new Map();
 let loading;
 export function loadAuthoredAssets(){
   return loading??=Promise.all(names.map(async name=>{
-    const {scene}=await new GLTFLoader().loadAsync(`${import.meta.env.BASE_URL}models/neighborhood-v1/${name}.glb`);
+    const bytes=await downloadAsset(`models/neighborhood-v1/${name}.glb`, `街景 ${name}`);
+    const {scene}=await new GLTFLoader().parseAsync(bytes, `${import.meta.env.BASE_URL}models/neighborhood-v1/`).catch(error=>{throw new Error(`街景 ${name} 的材质未能读取：${error.message}`)});
     scene.traverse(o=>{if(o.isMesh){
       o.castShadow=o.receiveShadow=true;
       if(o.material.name==='NX_RestaurantWide')o.material.map=shopGraphic('fascia');
