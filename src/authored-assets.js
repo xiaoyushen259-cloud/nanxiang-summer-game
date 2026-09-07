@@ -9,7 +9,7 @@ const templates=new Map();
 let loading;
 export function loadAuthoredAssets(){
   return loading??=Promise.all(names.map(async name=>{
-    const {scene}=await new GLTFLoader().loadAsync(`/models/neighborhood-v1/${name}.glb`);
+    const {scene}=await new GLTFLoader().loadAsync(`${import.meta.env.BASE_URL}models/neighborhood-v1/${name}.glb`);
     scene.traverse(o=>{if(o.isMesh){
       o.castShadow=o.receiveShadow=true;
       if(o.material.name==='NX_RestaurantWide')o.material.map=shopGraphic('fascia');
