@@ -1,0 +1,50 @@
+南巷 · 夏日来信 — 角色资源说明
+
+AvatarSample_A（主角）、AvatarSample_B（散步邻居）、AvatarSample_C（河边阿遥），pixiv / VRoid。
+授权：VRoid 官方样例模型使用条款（非 CC0）。
+https://vroid.pixiv.help/hc/en-us/articles/4402394424089
+允许营利或非营利使用与编辑；不将样例原始模型收费再分发、标为 CC0，
+或将其用于角色创建服务。完整要求以官方条款为准。
+
+Sendagaya Shibu / β Ver AvatarSample_1（邮局小夏），pixiv / VRoid。
+授权：CC0。
+https://vroid.pixiv.help/hc/en-us/articles/360012381793
+
+Sendagaya Shino（旧书店阿青），pixiv / VRoid。授权：CC0。
+https://vroid.pixiv.help/hc/en-us/articles/360013482714-Sendagaya-Shino
+
+Sakurada Fumiriya（食堂阿满），pixiv / VRoid。授权：CC0。
+https://vroid.pixiv.help/hc/en-us/articles/360014788554-Sakurada-Fumiriya
+
+模型文件获取自公开再分发镜像（不是 pixiv 官方仓库）：
+https://github.com/madjin/vrm-samples/tree/master/vroid
+原文件保存在 art-source/candidates；保留原贴图、骨骼与表情。
+六个角色使用六份不同的模型，保留各自的脸部、服饰、骨骼和表情。
+
+人体动作：Mesh2Motion 的 human-base-animations.glb、human-addon-animations.glb。
+参考骨架：rig-human.glb。模型、骨架与动画资源授权：CC0。
+https://github.com/Mesh2Motion/mesh2motion-app
+https://github.com/Mesh2Motion/mesh2motion-app/blob/main/LICENSE-CC0.MD
+本项目提取所需完整动作曲线并重定向到 VRM，编写动作混合、速度适配、
+脚底高度修正和眨眼逻辑；不声称原始动画曲线由本项目创作。
+
+手指放松参考、步行与跑步：Three.js 示例 Xbot.glb 中的 Mixamo 动画。
+https://threejs.org/examples/models/gltf/Xbot.glb
+https://threejs.org/examples/webgl_animation_skinning_additive_blending.html
+原资源归 Adobe / Mixamo；不标为 CC0。使用重定向后的动作作为游戏的一部分，
+不将原始资源作为独立素材包出售或再分发。Mixamo 官方使用说明：
+https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html
+主角重新调整髋关节内收与侧摆，校准步幅与行进速度，并使用脚跟/前掌落地参考点。
+
+场景墙面、砖石、木纹和织物纹理由本项目程序生成，无外部贴图库依赖。
+
+Three.js 与 @pixiv/three-vrm：MIT；许可证分别见 THREE-LICENSE.txt、THREE-VRM-LICENSE.txt。
+
+2026-09-06 动作修正：Idle_Subtle、Idle Listening、Greeting、Head Nod 来自 Mesh2Motion（CC0）。保留源动画的手臂和手指关系，添加动作调度及头颈点头增量混合。程序生成的持物姿态与手持道具已从运行时停用。
+邮包封签、书封、瓶签、公告等印刷图案为本项目 Canvas 图集，道具几何由程序生成。
+
+城市店铺灯箱、侧招牌、圆形食堂标识与云层为本项目程序生成。美术参考《绝区零》街区构成，没有导入其游戏素材。
+
+2026-09-06 建筑深化：砖墙、凸窗、管道设备、阳台栏杆、外梯和金属雨棚为本项目程序几何；旧版角色手持清单、笔、碗筷、书本与手机为本项目实验道具，现已停用；场景中静态碗筷、书本保留。
+
+叉腰修正：Idle Listening 不再用于运行时；RestShift 使用 Xbot / Mixamo 的 Everyday_Idle。Greeting 左臂改用 Mesh2Motion Idle_Subtle 的完整动作链并匹配时长。动画来源及许可证保持上述归属。

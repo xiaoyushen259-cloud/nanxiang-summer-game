@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#71bdab"><title>南巷 · 夏日来信</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23294340'/%3E%3Cpath d='M12 20h40v27H12zM12 20l20 16 20-16' fill='none' stroke='%23f2edda' stroke-width='4'/%3E%3C/svg%3E"></head>
+<body>
+<canvas id="world" aria-label="南巷三维探索场景"></canvas>
+<div id="loading"><span class="mail-icon">✉</span><p id="loading-text">正在走进南巷…</p></div>
+<header id="identity"><span class="stamp">南<br>巷</span><div><h1>夏日来信</h1><p>NANXIANG · A SUMMER LETTER</p></div></header>
+<div id="top-right"><span id="weather">晴 · 午后</span><button id="journal-btn" title="信件 / J" aria-label="打开信件">✉ <span id="mail-count">0 / 3</span></button><button id="menu-btn" title="操作说明" aria-label="打开操作说明">☰</button></div>
+<div id="location"><span class="location-mark">◇</span><span id="place-name">南巷邮局</span><span class="location-line"></span></div>
+<div id="crosshair" hidden></div><div id="interaction" hidden><kbd>E</kbd><span></span></div>
+<div id="start" class="paper"><span class="eyebrow">今天，也慢慢走吧。</span><h2>有三封信，等你送到。</h2><p>穿过街巷，和路上的人聊聊天。</p><button id="start-btn" class="primary" disabled>正在准备街区… <span>→</span></button><div class="start-help">WASD 行走 · 鼠标环顾 · E 交谈</div></div>
+<aside id="task"><span class="tiny-label">手边的事</span><p id="objective">去邮筒旁，和小夏聊聊。</p></aside>
+<div id="toolbar"><button id="view-btn" title="切换视角 / V" aria-label="切换视角">◎<span>第一人称</span></button><button id="sound-btn" title="开关环境声 / M" aria-label="开启环境声">♫<span>声音关</span></button><button id="photo-btn" title="保存画面 / P" aria-label="保存画面">▣<span>拍照</span></button></div>
+<div id="controls">WASD <span>走动</span><i>·</i> E <span>互动</span><i>·</i> V <span>视角</span><i>·</i> ESC <span>释放鼠标</span></div>
+<section id="dialogue" class="paper" hidden aria-label="人物对话"><span id="speaker"></span><p id="dialogue-text"></p><button id="next-dialogue">继续 <span>↵</span></button></section>
+<section id="journal" class="paper panel" hidden aria-label="信件清单"><button class="close" data-close="journal" aria-label="关闭信件">×</button><span class="eyebrow">南巷邮便</span><h2>装在信里的夏天</h2><p class="panel-intro">有些话，还是写在纸上比较好。</p><ol id="letters"></ol><button id="reset-btn">重新开始送信</button></section>
+<section id="help" class="paper panel" hidden aria-label="操作说明"><button class="close" data-close="help" aria-label="关闭操作说明">×</button><span class="eyebrow">在南巷散步</span><h2>不赶时间。</h2><dl><dt>W A S D / 方向键</dt><dd>行走</dd><dt>鼠标 / 按住画面拖动</dt><dd>环顾四周</dd><dt>E / 点击互动提示</dt><dd>交谈、摸猫、坐下</dd><dt>Shift / Space</dt><dd>快走 / 跳跃</dd><dt>V</dt><dd>第一 / 第三人称</dd><dt>J / M / P</dt><dd>信件 / 环境声 / 拍照</dd><dt>Esc</dt><dd>关闭面板或释放鼠标</dd></dl><p class="panel-intro">鼠标释放后，点击画面继续。移动设备可用左下方摇杆，拖动右侧画面环顾。</p><button id="resume-btn" class="primary">回到街上 <span>→</span></button></section>
+<div id="toast" role="status" hidden></div><div id="touch-controls" hidden><div id="joystick"><div></div></div><button id="touch-action">E</button></div>
+<script type="module" src="/src/main.js"></script>
+</body></html>

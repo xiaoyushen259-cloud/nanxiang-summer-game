@@ -1,0 +1,10 @@
+node_modules/
+dist/
+output/
+art-source/
+artifacts/
+.env
+.env.*
+artifacts/*.log
+artifacts/*.pid
+art-source/*.blend1
